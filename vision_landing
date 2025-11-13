@@ -1245,6 +1245,9 @@ signal.signal(signal.SIGTERM, sigtracker.handle_sig)
 log.info("Connecting to drone [%s]" % args.connect)
 printNoLF("Connecting to drone [%s]..." % args.connect)
 craft = Craft(args.connect)
+craft.vehicle._master.mav.srcSystem   = 200
+craft.vehicle._master.mav.srcComponent = 191
+
 if not craft.connected:
     print("Error: Could not connect to drone")
     log.critical("Error: Could not connect to drone")
@@ -1343,28 +1346,32 @@ print("Initial altitude: " + str(craft.initialAltitude))
 
 track_targets.waitImage()
 
-print("Take off")
-if True:
-    targetAltitude = 1
-    craft.vehicle.simple_takeoff(targetAltitude)
-    while True:
-        print("Altitude: " + str(craft.vehicle.location.global_relative_frame.alt))
-        if craft.vehicle.location.global_relative_frame.alt >= targetAltitude * 0.90:
-            print("Reached target altitude")
-            break
-        sleep(1)
+if useSmartLanding:
+    print("Take off")
+    if True:
+        targetAltitude = 1
+        craft.vehicle.simple_takeoff(targetAltitude)
+        while True:
+            print("Altitude: " + str(craft.vehicle.location.global_relative_frame.alt))
+            if craft.vehicle.location.global_relative_frame.alt >= targetAltitude * 0.90:
+                print("Reached target altitude")
+                break
+            sleep(1)
 
-    craft.gimbalIsDown = False
+        craft.gimbalIsDown = False
 
-if False:
-    fps = 15
-    print("Rotating")
-    for i in range(fps * 10):
-        craft.move(0, 0, 0, 50)
-        sleep(1.0 / 15)
 
-print("Start actions")
-craft.startActions()
+        print("Start actions")
+        craft.startActions()
+
+    if False:
+        fps = 15
+        print("Rotating")
+        for i in range(fps * 10):
+            craft.move(0, 0, 0, 50)
+            sleep(1.0 / 15)
+else:
+    print("LANDING_TARGET-only mode: skipping local controller and auto-takeoff.")
 
 ### --------------------------------
 ### Main Loop
@@ -1407,8 +1414,7 @@ while not doExit:
 
     now = monotonic_time()
     elapsedSec = (now - craft.lastDetection) / 1e+9
-    if elapsedSec > 1:
-        # Target timeout
+    if useSmartLanding and elapsedSec > 1:
         craft.processState(now, False)
 
     if args.simulator and not craft.vehicle.armed and not track_targets.shutdown:

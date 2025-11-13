@@ -57,7 +57,7 @@ sudo systemctl restart nvargus-daemon
    ! video/x-raw(memory:NVMM),width=640,height=480,framerate=30/1 \
    ! nvvidconv flip-method=0 ! video/x-raw,format=BGRx \
    ! videoconvert ! video/x-raw,format=BGR ! appsink drop=true max-buffers=1 sync=false" \
-  ~/Desktop/vision-landing-2/calibration/imx219-640x480.yml
+  ~/Desktop/Vision/vision-landing-2/calibration/imx219-640x480.yml
 
 ------------------------------------------------------------------
 Run (Python 2)

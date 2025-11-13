@@ -40,7 +40,7 @@ import atexit
 import numpy as np
 import sys
 
-useSmartLanding = True
+useSmartLanding = False
 
 if useSmartLanding:
     import os
@@ -1173,13 +1173,15 @@ if args.logdir:
         logging.root.removeHandler(handler)
 
     # Add timestamped logfile out
-    logging.basicConfig(filename=args.logdir+'/vision_landing.'+nowtime+'.log', format='%(asctime)s %(levelname)s %(message)s', level=logging.DEBUG)
+    level = logging.DEBUG if args.verbose else logging.INFO
+    logging.basicConfig(filename=args.logdir+'/vision_landing.'+nowtime+'.log', format='%(asctime)s %(levelname)s %(message)s', level=level)
     # Create handly symlink to current logfile
     if path.exists(args.logdir+'/last.log'):
         remove(args.logdir+'/last.log')
     symlink(args.logdir+'/vision_landing.'+nowtime+'.log', args.logdir+'/last.log')
 else:
-    logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.DEBUG)
+    level = logging.DEBUG if args.verbose else logging.INFO
+    logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=level)
 log = logging.getLogger(__name__)
 
 # Check if calibration data exists
@@ -1301,8 +1303,8 @@ except:
     pass
 # Set the precland buffer to 250ms.  This should give enough buffer space for even very slow computers
 try:
-    if 'PLND_BUFFER' in craft.vehicle.parameters:
-        craft.vehicle.parameters['PLND_BUFFER'] = 250
+    if 'PLND_LAG' in craft.vehicle.parameters:
+        craft.vehicle.parameters['PLND_LAG'] = 0.250
 except:
     pass
 

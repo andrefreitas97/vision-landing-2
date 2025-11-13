@@ -1,22 +1,28 @@
 {
-	"markers": [
-		{
-			"id": 199,
-			"size": 0.135,
-			"offsetX": 0.026349,
-            "offsetY": 0.141789
-		},
-		{
-			"id": 118,
-			"size": 0.03,
-			"offsetX": 0.046997,
-			"offsetY": -0.013023
-		},
-		{
-			"id": 85,
-			"size": 0.014,
-			"offsetX": 0.0,
-			"offsetY": 0.0
-		}
-	]
+    "markers": [
+        {
+            "id": 1,
+            "size": 0.01875,
+            "offsetX": 0.0,
+            "offsetY": 0.0
+        },
+        {
+            "id": 2,
+            "size": 0.0375,
+            "offsetX": 0.016875,
+            "offsetY": 0.050625
+        },
+        {
+            "id": 3,
+            "size": 0.075,
+            "offsetX": -0.084375,
+            "offsetY": 0.050625
+        },
+        {
+            "id": 4,
+            "size": 0.150,
+            "offsetX": -0.016875,
+            "offsetY": -0.151875
+        }
+    ]
 }

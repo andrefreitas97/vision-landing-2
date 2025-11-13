@@ -1,9 +1,37 @@
 [Unit]
-Description=Vision Landing System
+Description=Vision Landing (LANDING_TARGET publisher)
+After=network-online.target nvargus-daemon.service display-manager.service
+Wants=network-online.target nvargus-daemon.service
 
 [Service]
-ExecStart=/usr/local/vision_landing/vision_landing
-TimeoutStartSec=0
+Type=simple
+# Run the app as your user so it finds ~/.local Python2 packages
+User=hugo
+Group=hugo
+WorkingDirectory=/home/hugo/Desktop/vision-landing-2
+
+# Run ExecStartPre as root even though User= is set (needed for nvargus restart)
+PermissionsStartOnly=true
+ExecStartPre=/bin/systemctl restart nvargus-daemon.service
+ExecStartPre=/bin/sleep 1
+
+# If you want the preview window on :0
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/hugo/.Xauthority
+
+# Make Python logs unbuffered and make sure user site-packages are visible
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONPATH=/home/hugo/.local/lib/python2.7/site-packages
+Environment=LANG=C.UTF-8
+
+# Use python2 explicitly (systemd has a tiny PATH; avoids shebang/env surprises)
+ExecStart=/usr/bin/python2 /home/hugo/Desktop/vision-landing-2/vision_landing
+
+Restart=on-failure
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
 
 [Install]
-WantedBy=multi-user.target
+# Use graphical.target if you need the preview; use multi-user.target if headless
+WantedBy=graphical.target

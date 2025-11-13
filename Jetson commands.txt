@@ -1,0 +1,142 @@
+Use:
+pymavlink==2.4.8
+dronekit==2.9.2
+
+In your SSH session (same user hugo):
+
+export DISPLAY=:0
+export XAUTHORITY=/home/hugo/.Xauthority
+
+-------------------------------------------------------------------------
+# marker 0 for testing
+--------------------------------------------------------------------
+
+sudo nano config.json
+
+{
+        "markers": [
+                {
+                        "id": 0,
+                        "size": 0.0556,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0
+                }
+        ]
+}
+
+
+----------------------------------------------------------------------
+Calibration at 640x480 (already have saved a calibration file imx219-640x480.yml)
+-----------------------------------------------------------------------
+
+sudo systemctl restart nvargus-daemon
+
+aruco_calibration "nvarguscamerasrc sensor-mode=3 ! \
+ video/x-raw(memory:NVMM),width=1640,height=1232,framerate=30/1 ! \
+ nvvidconv flip-method=2 ! video/x-raw,format=BGRx,width=640,height=480 ! \
+ videoconvert ! video/x-raw,format=BGR,width=640,height=480 ! \
+ queue max-size-buffers=2 leaky=downstream ! \
+ appsink caps=video/x-raw,format=BGR,width=640,height=480 drop=true max-buffers=1 sync=false" \
+ ~/Desktop/vision-landing-2/calibration/imx219-640x480.yml \
+ -m ~/Desktop/vision-landing-2/calibration/aruco_calibration_board_a4.yml \
+ -size 0.035
+
+----------------------------------------------------------------
+Tracking at 640x480
+------------------------------------------------------------------
+
+sudo systemctl restart nvargus-daemon
+
+./track_targets --test \
+  --markerhistory=30 --markerthreshold=80 \
+  --width 640 --height 480 --fps 30 \
+  -o "appsrc is-live=true do-timestamp=true format=time \
+      caps=video/x-raw,format=BGR,width=640,height=480,framerate=30/1 \
+      ! videoconvert ! xvimagesink sync=false" \
+  "nvarguscamerasrc sensor-mode=3 \
+   ! video/x-raw(memory:NVMM),width=640,height=480,framerate=30/1 \
+   ! nvvidconv flip-method=0 ! video/x-raw,format=BGRx \
+   ! videoconvert ! video/x-raw,format=BGR ! appsink drop=true max-buffers=1 sync=false" \
+  ~/Desktop/vision-landing-2/calibration/imx219-640x480.yml
+
+------------------------------------------------------------------
+Run (Python 2)
+------------------------------------------------------------------
+
+sudo systemctl restart nvargus-daemon
+
+./vision_landing
+
+--------------------------------------------------------------------
+Concentric diminishing markers (A4 paper)
+--------------------------------------------------------------------
+
+{
+        "markers": [
+                {
+                        "id": 1,
+                        "size": 0.0125,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0
+                },
+		{
+                        "id": 2,
+                        "size": 0.025,
+                        "offsetX": 0.01125,
+                        "offsetY": 0.03375
+                },
+		{
+                        "id": 3,
+                        "size": 0.050,
+                        "offsetX": -0.05625,
+                        "offsetY": 0.03375
+                },
+		{
+                        "id": 4,
+                        "size": 0.100,
+                        "offsetX": -0.01125,
+                        "offsetY": -0.10125
+                }
+        ]
+}
+
+--------------------------------------------------------------------
+Concentric diminishing markers (A3 paper)
+--------------------------------------------------------------------
+
+{
+        "markers": [
+                {
+                        "id": 1,
+                        "size": 0.01875,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0
+                },
+		{
+                        "id": 2,
+                        "size": 0.0375,
+                        "offsetX": 0.016875,
+                        "offsetY": 0.050625
+                },
+		{
+                        "id": 3,
+                        "size": 0.075,
+                        "offsetX": -0.084375,
+                        "offsetY": 0.050625
+                },
+		{
+                        "id": 4,
+                        "size": 0.150,
+                        "offsetX": -0.016875,
+                        "offsetY": -0.151875
+                }
+        ]
+}
+
+-------------------------------------------------------------------
+Auto start
+-------------------------------------------------------------------
+
+sudo systemctl daemon-reload
+sudo systemctl enable vision-landing.service
+sudo systemctl start vision-landing.service

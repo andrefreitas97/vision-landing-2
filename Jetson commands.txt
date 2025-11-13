@@ -138,5 +138,6 @@ Auto start
 -------------------------------------------------------------------
 
 sudo systemctl daemon-reload
-sudo systemctl enable vision-landing.service
-sudo systemctl start vision-landing.service
+sudo systemctl enable vision_landing.service
+sudo systemctl start vision_landing.service
+sudo systemctl stop vision_landing.service

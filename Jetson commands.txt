@@ -37,8 +37,8 @@ aruco_calibration "nvarguscamerasrc sensor-mode=3 ! \
  videoconvert ! video/x-raw,format=BGR,width=640,height=480 ! \
  queue max-size-buffers=2 leaky=downstream ! \
  appsink caps=video/x-raw,format=BGR,width=640,height=480 drop=true max-buffers=1 sync=false" \
- ~/Desktop/vision-landing-2/calibration/imx219-640x480.yml \
- -m ~/Desktop/vision-landing-2/calibration/aruco_calibration_board_a4.yml \
+ ~/Desktop/Vision/vision-landing-2/calibration/imx219-640x480.yml \
+ -m ~/Desktop/Vision/vision-landing-2/calibration/aruco_calibration_board_a4.yml \
  -size 0.035
 
 ----------------------------------------------------------------

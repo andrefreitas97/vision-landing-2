@@ -2,27 +2,27 @@
     "markers": [
         {
             "id": 1,
-            "size": 0.01875,
+            "size": 0.02651,
             "offsetX": 0.0,
             "offsetY": 0.0
         },
         {
             "id": 2,
-            "size": 0.0375,
-            "offsetX": 0.016875,
-            "offsetY": 0.050625
+            "size": 0.05302,
+            "offsetX": 0.02386,
+            "offsetY": 0.07158
         },
         {
             "id": 3,
-            "size": 0.075,
-            "offsetX": -0.084375,
-            "offsetY": 0.050625
+            "size": 0.10605,
+            "offsetX": -0.119305,
+            "offsetY": 0.07158
         },
         {
             "id": 4,
-            "size": 0.150,
-            "offsetX": -0.016875,
-            "offsetY": -0.151875
+            "size": 0.2121,
+            "offsetX": -0.02386,
+            "offsetY": -0.21475
         }
     ]
 }
